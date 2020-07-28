@@ -1,0 +1,73 @@
+<div id="app">
+</div>
+
+<script src="../dist/vue.global.js"></script>
+
+<script>
+    // const {createApp}=Vue;
+
+
+    const createAppAPI=function(render){
+        return function (rootComp){
+            const app={
+                mount(rootContainer){
+                    const vnode={
+                        tag:'h3',
+                        props:{
+                            class:'title',
+                            children:rootComp.data().value
+                        }
+
+                    }
+
+                    render(vnode,rootContainer)
+                }
+            };
+            return app;
+        }
+    }
+
+
+    // createRenderer
+    const createRenderer=function(options){
+        const render = (vnode,container)=>{
+            const parent=options.querySelector(container);
+
+            const child= options.createElement(vnode.tag);
+
+            if(typeof vnode.props.children==='string'){
+                child.textContent=vnode.props.children;
+            }
+            options.insert(parent,child);
+
+        }
+        return {
+            render,
+            createApp:createAppAPI(render)
+        }
+    }
+
+    // render
+    const renderer= createRenderer({
+        querySelector(el){
+            return document.querySelector(el)
+        },
+        createElement(tag){
+            return document.createElement(tag);
+        },
+        insert(parend,child){
+            parend.appendChild(child)
+        }
+    });
+
+    // vue3
+    renderer.createApp({
+        data(){
+            return{
+                value:'123456'
+            }
+        }
+    }).mount("#app");
+
+
+</script>
